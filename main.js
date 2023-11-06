@@ -1,27 +1,10 @@
 const candyList = document.getElementById("candyList");
 const addCandyButton = document.getElementById("addCandy");
-
-
-
-
 let candies = [];
 
-if (localStorage.getItem("candies")) {
-    candies = JSON.parse(localStorage.getItem("candies"));
-    candies.forEach((candyData) => {
-      addCandyToCrudCrud(candyData);
-    });
-  }
-
-  function saveCandiesToLocalStorage() {
-    localStorage.setItem("candies", JSON.stringify(candies));
-  }
-
 function addCandyToCrudCrud(candyData) {
-
     candies.push(candyData);
-
-
+    
     const listItem = document.createElement("li");
     candyList.appendChild(listItem);
     
@@ -40,23 +23,13 @@ function addCandyToCrudCrud(candyData) {
                     candyData.quantity = 0;
                 }
                 updateListItem();
-        saveCandiesToLocalStorage();
+      
             });
         }
     }
 
     updateListItem(); 
-   
-   
-    document.getElementById("candyName").value = "";
-    document.getElementById("candyDescription").value = "";
-    document.getElementById("candyPrice").value = "";
-    document.getElementById("candyQuantity").value = "";
-
-    saveCandiesToLocalStorage();
-   
-    
-
+    candyList.appendChild(listItem); 
 }
 
 addCandyButton.addEventListener("click", function () {
@@ -73,9 +46,26 @@ addCandyButton.addEventListener("click", function () {
             quantity: candyQuantity,
         };
 
-        addCandyToCrudCrud(candyData);
+        axios.post("https://crudcrud.com/api/06a4627583774f2e9111cec93fd0d1f5/candy", candyData)
+            .then((response) => {
+                console.log(response)
+                addCandyToCrudCrud(candyData);
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
-});
 
-
-
+    axios.get("https://crudcrud.com/api/06a4627583774f2e9111cec93fd0d1f5/candy")
+    .then((response) =>{
+        const candyData = response.data;
+        
+        for (const candy of candyData) {
+            addCandyToCrudCrud(candy);
+        }
+    })
+    .catch((error) => {
+       console.log(error);
+    });
+    
+})
