@@ -1,13 +1,27 @@
 const candyList = document.getElementById("candyList");
 const addCandyButton = document.getElementById("addCandy");
 
+
+
+
 let candies = [];
+
+if (localStorage.getItem("candies")) {
+    candies = JSON.parse(localStorage.getItem("candies"));
+    candies.forEach((candyData) => {
+      addCandyToCrudCrud(candyData);
+    });
+  }
+
+  function saveCandiesToLocalStorage() {
+    localStorage.setItem("candies", JSON.stringify(candies));
+  }
 
 function addCandyToCrudCrud(candyData) {
 
     candies.push(candyData);
 
-  
+
     const listItem = document.createElement("li");
     candyList.appendChild(listItem);
     
@@ -25,19 +39,21 @@ function addCandyToCrudCrud(candyData) {
                 if (candyData.quantity < 0) {
                     candyData.quantity = 0;
                 }
-                updateListItem(); 
+                updateListItem();
+        saveCandiesToLocalStorage();
             });
         }
     }
 
     updateListItem(); 
-
+   
    
     document.getElementById("candyName").value = "";
     document.getElementById("candyDescription").value = "";
     document.getElementById("candyPrice").value = "";
     document.getElementById("candyQuantity").value = "";
 
+    saveCandiesToLocalStorage();
    
     
 
